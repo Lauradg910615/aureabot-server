@@ -22,7 +22,7 @@ app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   const chatCompletion = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       { role: "system", content: promptAurea },
       { role: "user", content: userMessage },
