@@ -1,35 +1,35 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const { Configuration, OpenAIApi } = require('openai');
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import OpenAI from "openai";
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });
-const openai = new OpenAIApi(configuration);
 
-const promptAurea = `Eres AureaBot, un asistente cálido y experto en atención para Aurea Skincare...
+const promptAurea = `
+Nombre: AureaBot; Descripción: Asistente cálido y experto en atención para Aurea Skincare.
 
-Nombre: AureaBot; Descripción: Asistente cálido y experto en atención para Aurea Skincare.; Instrucciones: Este GPT es un asistente virtual...
-[📌 Aquí pega TODO tu prompt completo que me diste antes]
+Instrucciones: Este GPT es un asistente virtual de atención al cliente para la tienda en línea de Shopify llamada Aurea Skincare (https://aureaskincare-store.com)...
+[✨ Aquí pega TODO tu prompt completo sin cortar nada]
 `;
 
-app.post('/chat', async (req, res) => {
+app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
-  const response = await openai.createChatCompletion({
-    model: 'gpt-4',
+  const chatCompletion = await openai.chat.completions.create({
+    model: "gpt-4",
     messages: [
-      { role: 'system', content: promptAurea },
-      { role: 'user', content: userMessage },
+      { role: "system", content: promptAurea },
+      { role: "user", content: userMessage },
     ],
   });
 
-  res.json({ reply: response.data.choices[0].message.content });
+  res.json({ reply: chatCompletion.choices[0].message.content });
 });
 
-app.listen(3000, () => console.log('AureaBot está escuchando en el puerto 3000'));
+app.listen(3000, () => console.log("💫 AureaBot está escuchando en el puerto 3000"));
